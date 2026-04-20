@@ -5,7 +5,7 @@ from gendiff.formatters import apply_format
 
 
 def build_ast(data1: Dict, data2: Dict) -> List[Dict]:
-
+    """Строит AST различий."""
     all_keys = sorted(set(data1.keys()) | set(data2.keys()))
     result = []
     
@@ -52,9 +52,14 @@ def generate_diff(file_path1: str, file_path2: str, format_name: str = 'stylish'
     
     ast = build_ast(data1, data2)
     
-    result = apply_format(ast, format_name)
-    
     if format_name == 'stylish':
+        result = format_stylish(ast, 0)
         return f"{{\n{result}\n}}"
-    
-    return result
+    elif format_name == 'plain':
+        from gendiff.formatters.plain import format_plain
+        return format_plain(ast)
+    elif format_name == 'json':
+        from gendiff.formatters.json import format_json
+        return format_json(ast)
+    else:
+        raise ValueError(f"Unknown format: {format_name}")
