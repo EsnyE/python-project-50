@@ -1,55 +1,62 @@
-from typing import Any, List, Dict
+def stylish(diff):
+    result = '{\n' + tree_view(diff) + '\n}'
+    return result
 
+def tree_view(diff, depth=1):
+    lines = []
+    for key, (type, value) in sorted(diff.items()):
+        lines = create_formatted_line(lines, key, value, depth, type)
+    result = '\n'.join(lines)
+    return result
 
-def format_value(value: Any, depth: int = 0) -> str:
-    """Форматирует значение для вывода с учетом вложенности."""
+def create_formatted_line(lines, key, value, depth, type):
+    prefix = '  '
+    if type == 'nested':
+        indent = (4 * depth - 2) * ' '
+        child_diff = tree_view(value, depth + 1)
+        formated_value = f'{{\n{child_diff}\n{indent}  }}'
+        lines = add_indent_and_format(depth, lines, prefix, key, formated_value)
+    elif type == 'changed':
+        lines = changed_data_diff(lines, value, depth, key)
+    elif type == 'added':
+        prefix = '+ '
+        lines = add_indent_and_format(depth, lines, prefix, key, value)
+    elif type == 'removed':
+        prefix = '- '
+        lines = add_indent_and_format(depth, lines, prefix, key, value)
+    else:
+        lines = add_indent_and_format(depth, lines, prefix, key, value)
+    return lines
+
+def add_indent_and_format(depth, lines, prefix, key, value):
+    formated_value = format_value(value, depth + 1)
+    indent = (4 * depth - 2) * ' '
+    lines.append(f"{indent}{prefix}{key}: {formated_value}")
+    return lines
+
+def format_value(value, depth):
     if isinstance(value, dict):
-        if not value:
-            return '{}'
-        
-        indent = '    ' * (depth + 1)
+        prefix = '  '
         lines = ['{']
-        for k, v in sorted(value.items()):
-            formatted_v = format_value(v, depth + 1)
-            lines.append(f"{indent}{k}: {formatted_v}")
-        lines.append('    ' * depth + '}')
+        for key, val in value.items():
+            formated_value = format_value(val, depth + 1)
+            lines = add_indent_and_format(depth, lines,
+                                          prefix, key, formated_value)
+        indent = ' ' * (4 * (depth - 1))
+        lines.append(f"{indent}}}")
         return '\n'.join(lines)
-    
-    if isinstance(value, bool):
+    elif isinstance(value, bool):
         return str(value).lower()
-    if value is None:
+    elif value is None:
         return 'null'
-    if isinstance(value, str):
+    elif isinstance(value, str):
         return value
     return str(value)
 
-
-def format_stylish(ast: List[Dict], depth: int = 0) -> str:
-    """Форматирует AST в стиле stylish."""
-    indent = '    ' * depth
-    lines = []
-    
-    for node in ast:
-        key = node['key']
-        status = node['status']
-        
-        if status == 'nested':
-            lines.append(f"{indent}{key}: {{")
-            lines.append(format_stylish(node['children'], depth + 1))
-            lines.append(f"{indent}}}")
-        elif status == 'unchanged':
-            value = format_value(node['value'], depth)
-            lines.append(f"{indent}{key}: {value}")
-        elif status == 'added':
-            value = format_value(node['value'], depth)
-            lines.append(f"{indent}+ {key}: {value}")
-        elif status == 'removed':
-            value = format_value(node['value'], depth)
-            lines.append(f"{indent}- {key}: {value}")
-        elif status == 'changed':
-            old_value = format_value(node['old_value'], depth)
-            new_value = format_value(node['new_value'], depth)
-            lines.append(f"{indent}- {key}: {old_value}")
-            lines.append(f"{indent}+ {key}: {new_value}")
-    
-    return '\n'.join(lines)
+def changed_data_diff(lines, value, depth, key):
+    old, new = value
+    old_new_pairs = [('- ', old), ('+ ', new)]
+    for prefix, value in old_new_pairs:
+        formated_value = format_value(value, depth + 1)
+        lines = add_indent_and_format(depth, lines, prefix, key, formated_value)
+    return lines
