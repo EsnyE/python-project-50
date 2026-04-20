@@ -1,5 +1,5 @@
 from gendiff.scripts.parser import parse_file
-from formatters import apply_format
+from gendiff.formatters import apply_format
 
 
 def build_ast(data1: dict, data2: dict) -> list:
