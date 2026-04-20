@@ -4,7 +4,7 @@ from typing import Dict, Any
 
 
 def parse_file(file_path: str) -> Dict[str, Any]:
-
+    """Парсит файл в зависимости от расширения."""
     _, ext = os.path.splitext(file_path)
     ext = ext.lower()
     
@@ -14,10 +14,7 @@ def parse_file(file_path: str) -> Dict[str, Any]:
     if ext == '.json':
         return json.loads(content)
     elif ext in ('.yml', '.yaml'):
-        try:
-            import yaml
-            return yaml.safe_load(content)
-        except ImportError:
-            raise RuntimeError("PyYAML is required for YAML support")
+        import yaml
+        return yaml.safe_load(content)
     else:
         raise ValueError(f"Unsupported file format: {ext}")
