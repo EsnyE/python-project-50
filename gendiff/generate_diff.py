@@ -1,7 +1,9 @@
 import os
 from typing import Any, Dict, List
 from gendiff.scripts.parser import parse_file
-from gendiff.formatters import apply_format
+from gendiff.formatters.stylish import format_stylish
+from gendiff.formatters.plain import format_plain
+from gendiff.formatters.json import format_json
 
 
 def build_ast(data1: Dict, data2: Dict) -> List[Dict]:
