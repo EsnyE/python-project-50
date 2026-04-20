@@ -18,12 +18,10 @@
 
 ## Демонстрация работы
 
-### Формат stylish
-
 [![asciicast](https://asciinema.org/a/tcgYKDS96lbBCG9n)]
 
 # Клонирование репозитория
 git clone https://github.com/EsnyE/python-project-50.git
 
-# Запуск
+## Запуск
 cd gendiff
