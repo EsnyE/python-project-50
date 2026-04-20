@@ -24,4 +24,4 @@
 git clone https://github.com/EsnyE/python-project-50.git
 
 ## Запуск
-cd gendiff
+uv run gendiff -h
