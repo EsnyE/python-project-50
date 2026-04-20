@@ -1,18 +1,7 @@
 from typing import Any, List, Dict
 def format_plain(ast, path=''):
-    """
-    Форматирует дерево различий в плоский текстовый формат.
-    
-    Args:
-        ast: словарь или список с деревом различий
-        path: текущий путь в дереве
-    
-    Returns:
-        str: отформатированная строка в plain формате
-    """
     lines = []
     
-    # Если ast - это список, преобразуем его в словарь для обработки
     if isinstance(ast, list):
         ast_dict = {item['key']: item for item in ast}
     else:
@@ -30,7 +19,9 @@ def format_plain(ast, path=''):
             elif status == 'added':
                 data = value.get('value')
                 formatted = format_plain_value(data)
-                lines.append(f"Property '{current_path}' was added with value: {formatted}")
+                lines.append(
+                    f"Property '{current_path}' was added with value: {formatted}"
+                )
                 
             elif status == 'removed':
                 lines.append(f"Property '{current_path}' was removed")
@@ -40,21 +31,15 @@ def format_plain(ast, path=''):
                 new = value.get('new_value')
                 formatted_old = format_plain_value(old)
                 formatted_new = format_plain_value(new)
-                lines.append(f"Property '{current_path}' was updated. From {formatted_old} to {formatted_new}")
+                lines.append(
+                    f"Property '{current_path}' was updated. "
+                    f"From {formatted_old} to {formatted_new}"
+                )
     
     return '\n'.join(filter(None, lines))
 
 
 def format_plain_value(value):
-    """
-    Форматирует значение для plain формата.
-    
-    Args:
-        value: значение для форматирования
-    
-    Returns:
-        str: отформатированное значение
-    """
     if isinstance(value, dict):
         return '[complex value]'
     elif value is None:

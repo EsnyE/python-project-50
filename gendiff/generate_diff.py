@@ -1,5 +1,4 @@
-import os
-from typing import Any, Dict, List
+from typing import Dict
 from gendiff.parser import parse_file
 from gendiff.formatters.stylish import format_stylish
 from gendiff.formatters.plain import format_plain
@@ -7,46 +6,36 @@ from gendiff.formatters.json import format_json
 
 
 def build_ast(data1: Dict, data2: Dict) -> Dict:
-
     all_keys = sorted(set(data1.keys()) | set(data2.keys()))
-    result = {}
+    ast = {}
     
     for key in all_keys:
         if key not in data1:
-            result[key] = {
-                'status': 'added',
-                'value': data2[key]
-            }
+            ast[key] = {'status': 'added', 'value': data2[key]}
         elif key not in data2:
-            result[key] = {
-                'status': 'removed',
-                'value': data1[key]
-            }
+            ast[key] = {'status': 'removed', 'value': data1[key]}
+        elif data1[key] == data2[key]:
+            ast[key] = {'status': 'unchanged', 'value': data1[key]}
         elif isinstance(data1[key], dict) and isinstance(data2[key], dict):
-            result[key] = {
+            ast[key] = {
                 'status': 'nested',
                 'children': build_ast(data1[key], data2[key])
             }
-        elif data1[key] == data2[key]:
-            result[key] = {
-                'status': 'unchanged',
-                'value': data1[key]
-            }
         else:
-            result[key] = {
+            ast[key] = {
                 'status': 'changed',
                 'old_value': data1[key],
                 'new_value': data2[key]
             }
     
-    return result
+    return ast
 
 
-def generate_diff(file_path1: str, file_path2: str, format_name: str = 'stylish') -> str:
-
+def generate_diff(
+    file_path1: str, file_path2: str, format_name: str = 'stylish'
+) -> str:
     data1 = parse_file(file_path1)
     data2 = parse_file(file_path2)
-    
     ast = build_ast(data1, data2)
     
     if format_name == 'stylish':
