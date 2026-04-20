@@ -1,6 +1,6 @@
 import os
 from typing import Any, Dict, List
-from gendiff.scripts.parser import parse_file
+from gendiff.parser import parse_file
 from gendiff.formatters.stylish import format_stylish
 from gendiff.formatters.plain import format_plain
 from gendiff.formatters.json import format_json
@@ -48,20 +48,18 @@ def build_ast(data1: Dict, data2: Dict) -> List[Dict]:
 
 
 def generate_diff(file_path1: str, file_path2: str, format_name: str = 'stylish') -> str:
-
+    """Сравнивает два файла и возвращает строку с различиями."""
     data1 = parse_file(file_path1)
     data2 = parse_file(file_path2)
     
     ast = build_ast(data1, data2)
     
     if format_name == 'stylish':
-        result = format_stylish(ast, 0)
+        result = format_stylish(ast, 1)
         return f"{{\n{result}\n}}"
     elif format_name == 'plain':
-        from gendiff.formatters.plain import format_plain
         return format_plain(ast)
     elif format_name == 'json':
-        from gendiff.formatters.json import format_json
         return format_json(ast)
     else:
         raise ValueError(f"Unknown format: {format_name}")

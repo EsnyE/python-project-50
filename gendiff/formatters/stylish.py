@@ -2,7 +2,7 @@ from typing import Any, List, Dict
 
 
 def format_value(value: Any, depth: int = 0) -> str:
-
+    """Форматирует значение для вывода с учетом вложенности."""
     if isinstance(value, dict):
         indent = '    ' * depth
         current_indent = '    ' * (depth + 1)
@@ -23,7 +23,7 @@ def format_value(value: Any, depth: int = 0) -> str:
 
 
 def format_stylish(ast: List[Dict], depth: int = 0) -> str:
-
+    """Форматирует AST в стиле stylish."""
     indent = '    ' * depth
     current_indent = '    ' * (depth + 1)
     lines = []
@@ -33,22 +33,22 @@ def format_stylish(ast: List[Dict], depth: int = 0) -> str:
         status = node['status']
         
         if status == 'nested':
-            lines.append(f"{current_indent}{key}: {{")
+            lines.append(f"{indent}{key}: {{")
             lines.append(format_stylish(node['children'], depth + 1))
-            lines.append(f"{current_indent}}}")
+            lines.append(f"{indent}}}")
         elif status == 'unchanged':
             value = format_value(node['value'], depth + 1)
-            lines.append(f"{current_indent}{key}: {value}")
+            lines.append(f"{indent}{key}: {value}")
         elif status == 'added':
             value = format_value(node['value'], depth + 1)
-            lines.append(f"{current_indent}+ {key}: {value}")
+            lines.append(f"{indent}+ {key}: {value}")
         elif status == 'removed':
             value = format_value(node['value'], depth + 1)
-            lines.append(f"{current_indent}- {key}: {value}")
+            lines.append(f"{indent}- {key}: {value}")
         elif status == 'changed':
             old_value = format_value(node['old_value'], depth + 1)
             new_value = format_value(node['new_value'], depth + 1)
-            lines.append(f"{current_indent}- {key}: {old_value}")
-            lines.append(f"{current_indent}+ {key}: {new_value}")
+            lines.append(f"{indent}- {key}: {old_value}")
+            lines.append(f"{indent}+ {key}: {new_value}")
     
     return '\n'.join(lines)
