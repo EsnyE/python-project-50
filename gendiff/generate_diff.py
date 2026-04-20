@@ -23,7 +23,6 @@ def build_ast(data1: Dict, data2: Dict) -> List[Dict]:
                 'value': data1[key]
             })
         elif isinstance(data1[key], dict) and isinstance(data2[key], dict):
-
             result.append({
                 'key': key,
                 'status': 'nested',
@@ -55,7 +54,6 @@ def generate_diff(file_path1: str, file_path2: str, format_name: str = 'stylish'
     
     result = apply_format(ast, format_name)
     
-
     if format_name == 'stylish':
         return f"{{\n{result}\n}}"
     

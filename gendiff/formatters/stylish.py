@@ -6,7 +6,7 @@ def format_value(value: Any, depth: int = 0) -> str:
     if isinstance(value, dict):
         indent = '    ' * (depth + 1)
         lines = ['{']
-        for k, v in value.items():
+        for k, v in sorted(value.items()):
             formatted_v = format_value(v, depth + 1)
             lines.append(f"{indent}    {k}: {formatted_v}")
         lines.append('    ' * depth + '}')
