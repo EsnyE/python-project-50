@@ -7,7 +7,7 @@ from gendiff.formatters.json import format_json
 
 
 def build_ast(data1: Dict, data2: Dict) -> List[Dict]:
-    """Строит AST различий."""
+
     all_keys = sorted(set(data1.keys()) | set(data2.keys()))
     result = []
     
@@ -48,14 +48,14 @@ def build_ast(data1: Dict, data2: Dict) -> List[Dict]:
 
 
 def generate_diff(file_path1: str, file_path2: str, format_name: str = 'stylish') -> str:
-    """Сравнивает два файла и возвращает строку с различиями."""
+
     data1 = parse_file(file_path1)
     data2 = parse_file(file_path2)
     
     ast = build_ast(data1, data2)
     
     if format_name == 'stylish':
-        result = format_stylish(ast, 1)
+        result = format_stylish(ast)
         return f"{{\n{result}\n}}"
     elif format_name == 'plain':
         return format_plain(ast)
