@@ -1,8 +1,9 @@
 from typing import Dict
-from gendiff.parser import parse_file
-from gendiff.formatters.stylish import format_stylish
-from gendiff.formatters.plain import format_plain
+
 from gendiff.formatters.json import format_json
+from gendiff.formatters.plain import format_plain
+from gendiff.formatters.stylish import format_stylish
+from gendiff.parser import parse_file
 
 
 def build_ast(data1: Dict, data2: Dict) -> Dict:

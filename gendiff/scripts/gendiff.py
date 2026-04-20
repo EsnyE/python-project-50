@@ -1,6 +1,7 @@
-import sys
-import os
 import argparse
+import os
+import sys
+
 from gendiff.generate_diff import generate_diff
 
 
@@ -45,7 +46,6 @@ def main():
         )
         return 1
     
-    from gendiff.generate_diff import generate_diff
     diff = generate_diff(first_file, second_file, args.format)
     print(diff)
     

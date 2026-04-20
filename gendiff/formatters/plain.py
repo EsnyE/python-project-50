@@ -1,4 +1,3 @@
-from typing import Any, List, Dict
 def format_plain(ast, path=''):
     lines = []
     
@@ -19,9 +18,11 @@ def format_plain(ast, path=''):
             elif status == 'added':
                 data = value.get('value')
                 formatted = format_plain_value(data)
-                lines.append(
-                    f"Property '{current_path}' was added with value: {formatted}"
+                msg = (
+                    f"Property '{current_path}' was added with value: "
+                    f"{formatted}"
                 )
+                lines.append(msg)
                 
             elif status == 'removed':
                 lines.append(f"Property '{current_path}' was removed")
