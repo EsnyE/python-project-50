@@ -37,7 +37,7 @@ def format_stylish(diff, depth=1):
                 lines.append(f"{base_indent}  - {key}: {old_fmt}")
                 lines.append(f"{base_indent}  + {key}: {new_fmt}")
                 
-            else:  # unchanged
+            else:
                 data = value.get('value')
                 formatted = format_value(data, depth + 1)
                 lines.append(f"{item_indent}{key}: {formatted}")
