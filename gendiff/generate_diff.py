@@ -1,12 +1,11 @@
+import os
+from typing import Any, Dict, List
 from gendiff.scripts.parser import parse_file
 from gendiff.formatters import apply_format
 
 
-def build_ast(data1: dict, data2: dict) -> list:
+def build_ast(data1: Dict, data2: Dict) -> List[Dict]:
 
-    if not isinstance(data1, dict) or not isinstance(data2, dict):
-        return []
-    
     all_keys = sorted(set(data1.keys()) | set(data2.keys()))
     result = []
     
@@ -24,12 +23,11 @@ def build_ast(data1: dict, data2: dict) -> list:
                 'value': data1[key]
             })
         elif isinstance(data1[key], dict) and isinstance(data2[key], dict):
-        
-            children = build_ast(data1[key], data2[key])
+
             result.append({
                 'key': key,
                 'status': 'nested',
-                'children': children
+                'children': build_ast(data1[key], data2[key])
             })
         elif data1[key] == data2[key]:
             result.append({
@@ -52,7 +50,13 @@ def generate_diff(file_path1: str, file_path2: str, format_name: str = 'stylish'
 
     data1 = parse_file(file_path1)
     data2 = parse_file(file_path2)
-
+    
     ast = build_ast(data1, data2)
+    
+    result = apply_format(ast, format_name)
+    
 
-    return apply_format(ast, format_name)
+    if format_name == 'stylish':
+        return f"{{\n{result}\n}}"
+    
+    return result

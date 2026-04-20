@@ -47,7 +47,6 @@ options::
     
     args = parser.parse_args()
     
-    # Поиск файлов
     first_file = find_file(args.first_file)
     second_file = find_file(args.second_file)
     
