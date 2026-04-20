@@ -1,10 +1,18 @@
 install:
-	pip install -e .
+	uv sync
+
+run:
+	uv run gendiff
 
 test:
-	python -m pytest -vv
+	uv run pytest
 
 lint:
-	flake8 gendiff
+	uv run ruff check
 
-.PHONY: install test lint
+check: test lint
+
+build:
+	uv build
+
+.PHONY: install test lint selfcheck check build
