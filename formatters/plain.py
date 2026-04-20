@@ -23,15 +23,20 @@ def format_plain(ast: List[Dict], path: str = '') -> str:
         status = node['status']
         
         if status == 'nested':
-            lines.append(format_plain(node['children'], current_path))
+            children_result = format_plain(node['children'], current_path)
+            if children_result:
+                lines.append(children_result)
         elif status == 'added':
-            value = format_value(node['new_value'])
+            value = format_value(node['value'])
             lines.append(f"Property '{current_path}' was added with value: {value}")
         elif status == 'removed':
             lines.append(f"Property '{current_path}' was removed")
         elif status == 'changed':
-            old_value = format_value(node['old_value'])
-            new_value = format_value(node['new_value'])
-            lines.append(f"Property '{current_path}' was updated. From {old_value} to {new_value}")
-    
-    return '\n'.join(lines)
+            old_value = format_value(node.get('old_value', node.get('value')))
+            new_value = format_value(node.get('new_value', node.get('value')))
+            lines.append(
+                f"Property '{current_path}' was updated. "
+                f"From {old_value} to {new_value}"
+            )
+
+    return '\n'.join(filter(None, lines))
