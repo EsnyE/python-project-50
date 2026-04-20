@@ -1,42 +1,67 @@
 from typing import Any, List, Dict
-
-
-def format_value(value: Any) -> str:
-    if isinstance(value, dict):
-        return '[complex value]'
-    if value is None:
-        return 'null'
-    if isinstance(value, bool):
-        return str(value).lower()
-    if isinstance(value, str):
-        return f"'{value}'"
-    return str(value)
-
-
-def format_plain(ast: List[Dict], path: str = '') -> str:
-
+def format_plain(ast, path=''):
+    """
+    Форматирует дерево различий в плоский текстовый формат.
+    
+    Args:
+        ast: словарь или список с деревом различий
+        path: текущий путь в дереве
+    
+    Returns:
+        str: отформатированная строка в plain формате
+    """
     lines = []
     
-    for node in ast:
-        key = node['key']
-        current_path = f"{path}.{key}" if path else key
-        status = node['status']
-        
-        if status == 'nested':
-            children_result = format_plain(node['children'], current_path)
-            if children_result:
-                lines.append(children_result)
-        elif status == 'added':
-            value = format_value(node['value'])
-            lines.append(f"Property '{current_path}' was added with value: {value}")
-        elif status == 'removed':
-            lines.append(f"Property '{current_path}' was removed")
-        elif status == 'changed':
-            old_value = format_value(node.get('old_value', node.get('value')))
-            new_value = format_value(node.get('new_value', node.get('value')))
-            lines.append(
-                f"Property '{current_path}' was updated. "
-                f"From {old_value} to {new_value}"
-            )
-
+    # Если ast - это список, преобразуем его в словарь для обработки
+    if isinstance(ast, list):
+        ast_dict = {item['key']: item for item in ast}
+    else:
+        ast_dict = ast
+    
+    for key, value in sorted(ast_dict.items()):
+        if isinstance(value, dict) and 'status' in value:
+            status = value['status']
+            current_path = f"{path}.{key}" if path else key
+            
+            if status == 'nested':
+                children = format_plain(value['children'], current_path)
+                lines.append(children)
+                
+            elif status == 'added':
+                data = value.get('value')
+                formatted = format_plain_value(data)
+                lines.append(f"Property '{current_path}' was added with value: {formatted}")
+                
+            elif status == 'removed':
+                lines.append(f"Property '{current_path}' was removed")
+                
+            elif status == 'changed':
+                old = value.get('old_value')
+                new = value.get('new_value')
+                formatted_old = format_plain_value(old)
+                formatted_new = format_plain_value(new)
+                lines.append(f"Property '{current_path}' was updated. From {formatted_old} to {formatted_new}")
+    
     return '\n'.join(filter(None, lines))
+
+
+def format_plain_value(value):
+    """
+    Форматирует значение для plain формата.
+    
+    Args:
+        value: значение для форматирования
+    
+    Returns:
+        str: отформатированное значение
+    """
+    if isinstance(value, dict):
+        return '[complex value]'
+    elif value is None:
+        return 'null'
+    elif isinstance(value, bool):
+        return str(value).lower()
+    elif isinstance(value, str):
+        return f"'{value}'"
+    else:
+        return str(value)
