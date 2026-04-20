@@ -4,7 +4,7 @@ from typing import Any, List, Dict
 def format_value(value: Any, depth: int = 0) -> str:
 
     if isinstance(value, dict):
-        indent = '    ' * (depth + 1)
+        indent = '    ' * depth
         lines = ['{']
         for k, v in sorted(value.items()):
             formatted_v = format_value(v, depth + 1)
