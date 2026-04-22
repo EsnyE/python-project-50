@@ -52,9 +52,9 @@ jobs:
           pip install pytest pytest-cov pyyaml
           pip install -e .
       
-      - name: Run passing tests only
+      - name: Run tests with coverage
         run: |
-          pytest tests/test_generate_diff.py::test_generate_diff_flat_json -v --cov=gendiff --cov-report=xml:coverage.xml || true
+          pytest --cov=gendiff --cov-report=xml:coverage.xml || true
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
