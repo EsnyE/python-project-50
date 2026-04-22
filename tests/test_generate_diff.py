@@ -86,6 +86,7 @@ def test_generate_diff_mixed_formats():
 
 # Покрытие
 
+
 def test_format_stylish_empty():
     diff = {}
     result = format_stylish(diff)
