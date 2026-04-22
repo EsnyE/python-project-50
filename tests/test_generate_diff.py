@@ -79,3 +79,9 @@ def test_generate_diff_mixed_formats():
     result = generate_diff(json_file, yaml_file)
     
     assert result == expected
+
+def test_import():
+    from gendiff import generate_diff
+    from gendiff.parser import parse_file
+    from gendiff.formatters.stylish import format_stylish
+    assert True
