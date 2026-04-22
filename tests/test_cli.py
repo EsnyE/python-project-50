@@ -1,6 +1,6 @@
 from unittest.mock import patch
 from gendiff import cli
-from gendiff.cli import parse_args, main
+from gendiff.cli import main
 
 
 def test_cli_module_import():
