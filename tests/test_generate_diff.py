@@ -80,7 +80,3 @@ def test_generate_diff_mixed_formats():
     
     assert result == expected
 
-def test_import():
-    import gendiff.generate_diff 
-    import gendiff.parser
-    assert True
