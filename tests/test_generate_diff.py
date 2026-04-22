@@ -1,6 +1,10 @@
 import os
-
+import pytest
 from gendiff import generate_diff
+from gendiff.formatters.stylish import format_stylish
+from gendiff.formatters.plain import format_plain
+from gendiff.formatters.json import format_json
+import json
 
 
 def get_fixture_path(filename):
@@ -80,11 +84,7 @@ def test_generate_diff_mixed_formats():
     
     assert result == expected
 
-#Покрытие
-
-import pytest
-from gendiff.formatters.stylish import format_stylish
-
+# Покрытие
 
 def test_format_stylish_empty():
     diff = {}
@@ -121,9 +121,8 @@ def test_format_stylish_null():
     result = format_stylish(diff)
     assert 'null' in result
 
-def test_format_plain_added():
-    from gendiff.formatters.plain import format_plain
-    
+
+def test_format_plain_added(): 
     diff = {
         'key': {'status': 'added', 'value': 'value'}
     }
@@ -132,8 +131,6 @@ def test_format_plain_added():
 
 
 def test_format_plain_removed():
-    from gendiff.formatters.plain import format_plain
-    
     diff = {
         'key': {'status': 'removed'}
     }
@@ -142,8 +139,6 @@ def test_format_plain_removed():
 
 
 def test_format_plain_changed():
-    from gendiff.formatters.plain import format_plain
-    
     diff = {
         'key': {
             'status': 'changed',
@@ -156,8 +151,6 @@ def test_format_plain_changed():
 
 
 def test_format_plain_nested():
-    from gendiff.formatters.plain import format_plain
-    
     diff = {
         'parent': {
             'status': 'nested',
@@ -171,22 +164,19 @@ def test_format_plain_nested():
 
 
 def test_format_plain_complex_value():
-    from gendiff.formatters.plain import format_plain
-    
     diff = {
         'dict': {'status': 'added', 'value': {'a': 1}}
     }
     result = format_plain(diff)
     assert '[complex value]' in result
 
+
 def test_format_json():
-    from gendiff.formatters.json import format_json
-    import json
-    
     diff = {'key': {'status': 'added', 'value': 'value'}}
     result = format_json(diff)
     parsed = json.loads(result)
     assert 'key' in parsed
+
 
 def test_generate_diff_plain_format():
     file1 = get_fixture_path('file1.json')
@@ -200,7 +190,6 @@ def test_generate_diff_json_format():
     file1 = get_fixture_path('file1.json')
     file2 = get_fixture_path('file2.json')
     result = generate_diff(file1, file2, 'json')
-    import json
     parsed = json.loads(result)
     assert isinstance(parsed, dict)
 
@@ -208,6 +197,7 @@ def test_generate_diff_json_format():
 def test_generate_diff_unknown_format():
     with pytest.raises(ValueError):
         generate_diff('file1.json', 'file2.json', 'unknown')
+
 
 def test_import():
     __import__('gendiff')
