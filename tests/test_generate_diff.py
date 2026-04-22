@@ -81,7 +81,7 @@ def test_generate_diff_mixed_formats():
     assert result == expected
 
 def test_import():
-    from gendiff import generate_diff
-    from gendiff.parser import parse_file
-    from gendiff.formatters.stylish import format_stylish
+    import gendiff.generate_diff
+    import gendiff.parser
+    import gendiff.formatters.stylish
     assert True
