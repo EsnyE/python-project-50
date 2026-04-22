@@ -1,4 +1,6 @@
 import pytest
+import subprocess
+import sys
 from unittest.mock import patch
 from gendiff import cli
 from gendiff.cli import main
@@ -56,3 +58,16 @@ def test_main_function_exception():
                 result = main()
                 mock_print.assert_called_once()
                 assert result == 1
+
+
+def test_cli_main_import():
+    assert callable(main)
+
+
+def test_cli_module_execution():
+    result = subprocess.run(
+        [sys.executable, '-c', 'from gendiff import cli; cli.main()'],
+        capture_output=True,
+        text=True
+    )
+    assert result.returncode in (0, 2)
