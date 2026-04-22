@@ -1,3 +1,4 @@
+import pytest
 from unittest.mock import patch
 from gendiff import cli
 from gendiff.cli import main
