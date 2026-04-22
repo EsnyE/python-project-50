@@ -52,16 +52,12 @@ jobs:
       
       - name: Run tests with coverage
         run: |
-          cd code
-          pytest --cov=gendiff --cov-report=xml:../coverage.xml --cov-report=term
-          cd ..
+          pytest --cov=gendiff --cov-report=xml:coverage.xml --cov-report=term
           echo "=== Coverage file ==="
           ls -la coverage.xml
-          head -20 coverage.xml
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
