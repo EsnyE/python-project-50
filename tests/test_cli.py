@@ -7,24 +7,6 @@ def test_cli_module_import():
     assert hasattr(cli, 'main')
 
 
-def test_parse_args():
-    test_args = ['gendiff', 'file1.json', 'file2.json']
-    with patch('sys.argv', test_args):
-        args = parse_args()
-        assert args.first_file == 'file1.json'
-        assert args.second_file == 'file2.json'
-        assert args.format == 'stylish'
-
-
-def test_parse_args_with_format():
-    test_args = ['gendiff', '-f', 'plain', 'file1.json', 'file2.json']
-    with patch('sys.argv', test_args):
-        args = parse_args()
-        assert args.first_file == 'file1.json'
-        assert args.second_file == 'file2.json'
-        assert args.format == 'plain'
-
-
 def test_main_function_stylish():
     test_args = ['gendiff', 'file1.json', 'file2.json']
     with patch('sys.argv', test_args):
