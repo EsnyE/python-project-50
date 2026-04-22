@@ -7,6 +7,9 @@ from gendiff.formatters.json import format_json
 import json
 import subprocess
 import sys
+from gendiff.parser import parse_file
+from gendiff import cli
+
 
 def get_fixture_path(filename):
 
