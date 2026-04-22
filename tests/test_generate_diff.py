@@ -80,8 +80,134 @@ def test_generate_diff_mixed_formats():
     
     assert result == expected
 
-# В конце файла code/tests/test_generate_diff.py
+#Покрытие
 
+import pytest
+from gendiff.formatters.stylish import format_stylish
+
+
+def test_format_stylish_empty():
+    diff = {}
+    result = format_stylish(diff)
+    assert result == '{\n}'
+
+
+def test_format_stylish_nested():
+    diff = {
+        'common': {
+            'status': 'nested',
+            'children': {
+                'key': {'status': 'unchanged', 'value': 'value'}
+            }
+        }
+    }
+    result = format_stylish(diff)
+    assert 'common' in result
+    assert 'key' in result
+
+
+def test_format_stylish_boolean():
+    diff = {
+        'flag': {'status': 'added', 'value': True}
+    }
+    result = format_stylish(diff)
+    assert 'true' in result
+
+
+def test_format_stylish_null():
+    diff = {
+        'value': {'status': 'added', 'value': None}
+    }
+    result = format_stylish(diff)
+    assert 'null' in result
+
+def test_format_plain_added():
+    from gendiff.formatters.plain import format_plain
+    
+    diff = {
+        'key': {'status': 'added', 'value': 'value'}
+    }
+    result = format_plain(diff)
+    assert "Property 'key' was added with value: 'value'" in result
+
+
+def test_format_plain_removed():
+    from gendiff.formatters.plain import format_plain
+    
+    diff = {
+        'key': {'status': 'removed'}
+    }
+    result = format_plain(diff)
+    assert "Property 'key' was removed" in result
+
+
+def test_format_plain_changed():
+    from gendiff.formatters.plain import format_plain
+    
+    diff = {
+        'key': {
+            'status': 'changed',
+            'old_value': 'old',
+            'new_value': 'new'
+        }
+    }
+    result = format_plain(diff)
+    assert "was updated" in result
+
+
+def test_format_plain_nested():
+    from gendiff.formatters.plain import format_plain
+    
+    diff = {
+        'parent': {
+            'status': 'nested',
+            'children': {
+                'child': {'status': 'added', 'value': 'value'}
+            }
+        }
+    }
+    result = format_plain(diff)
+    assert "parent.child" in result
+
+
+def test_format_plain_complex_value():
+    from gendiff.formatters.plain import format_plain
+    
+    diff = {
+        'dict': {'status': 'added', 'value': {'a': 1}}
+    }
+    result = format_plain(diff)
+    assert '[complex value]' in result
+
+def test_format_json():
+    from gendiff.formatters.json import format_json
+    import json
+    
+    diff = {'key': {'status': 'added', 'value': 'value'}}
+    result = format_json(diff)
+    parsed = json.loads(result)
+    assert 'key' in parsed
+
+def test_generate_diff_plain_format():
+    file1 = get_fixture_path('file1.json')
+    file2 = get_fixture_path('file2.json')
+    result = generate_diff(file1, file2, 'plain')
+    assert isinstance(result, str)
+    assert len(result) > 0
+
+
+def test_generate_diff_json_format():
+    file1 = get_fixture_path('file1.json')
+    file2 = get_fixture_path('file2.json')
+    result = generate_diff(file1, file2, 'json')
+    import json
+    parsed = json.loads(result)
+    assert isinstance(parsed, dict)
+
+
+def test_generate_diff_unknown_format():
+    with pytest.raises(ValueError):
+        generate_diff('file1.json', 'file2.json', 'unknown')
 
 def test_import():
     __import__('gendiff')
