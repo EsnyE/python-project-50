@@ -1,11 +1,7 @@
-import os
-import sys
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from gendiff import cli
-from gendiff.cli import parse_args
-from gendiff.cli import main
-from gendiff.generate_diff import generate_diff
+from gendiff.cli import parse_args, main
+
 
 def test_cli_module_import():
     assert hasattr(cli, 'main')
