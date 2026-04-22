@@ -49,12 +49,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pytest pytest-cov
-          pip install -r requirements.txt 2>/dev/null || true
-          pip install flask python-dotenv psycopg2-binary validators requests beautifulsoup4
+          pip install pyyaml
       
       - name: Run tests with coverage
         run: |
-          pytest --cov=page_analyzer --cov-report=xml:coverage.xml
+          pytest --cov=gendiff --cov-report=xml:coverage.xml
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
