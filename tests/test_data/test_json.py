@@ -1,4 +1,4 @@
 from gendiff import generate_diff
 
-diff = generate_diff('test/test_data/file1.json', 'test/test_data/file2.json')
+diff = generate_diff('tests/test_data/file1.json', 'tests/test_data/file2.json')
 print(diff)
