@@ -1,4 +1,3 @@
-"""Тесты для скрипта gendiff."""
 import os
 import sys
 import subprocess
