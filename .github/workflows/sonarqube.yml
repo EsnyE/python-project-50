@@ -23,13 +23,12 @@
 
 # Feel free to take a look at our documentation (https://docs.sonarqube.org/latest/analysis/github-integration/)
 # or reach out to our community forum if you need some help (https://community.sonarsource.com/c/sq/10)
+
 name: SonarCloud
 on:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   sonarcloud:
@@ -46,16 +45,17 @@ jobs:
       
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-cov pyyaml
+          pip install pytest pytest-cov
           pip install -e .
       
       - name: Run tests with coverage
-        continue-on-error: true
         run: |
           pytest --cov=gendiff --cov-report=xml:coverage.xml --cov-report=term
+          
+          sed -i 's|/home/runner/work/python-project-50/python-project-50/||g' coverage.xml
+          
           echo "=== Coverage file ==="
-          ls -la coverage.xml
+          head -20 coverage.xml
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
