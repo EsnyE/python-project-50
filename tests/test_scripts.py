@@ -3,7 +3,7 @@ import os
 import sys
 import subprocess
 from gendiff.scripts import gendiff
-from gendiff.scripts.gendiff import find_file, main
+from gendiff.scripts.gendiff import find_file
 
 
 def test_scripts_module_import():
