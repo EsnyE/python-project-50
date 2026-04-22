@@ -1,5 +1,3 @@
-"""Тесты для форматеров."""
-import pytest
 from gendiff.formatters import stylish, plain, json
 from gendiff.formatters.stylish import format_stylish, format_value
 
