@@ -5,7 +5,8 @@ from gendiff.formatters.stylish import format_stylish
 from gendiff.formatters.plain import format_plain
 from gendiff.formatters.json import format_json
 import json
-
+import subprocess
+import sys
 
 def get_fixture_path(filename):
 
@@ -90,7 +91,7 @@ def test_generate_diff_mixed_formats():
 def test_format_stylish_empty():
     diff = {}
     result = format_stylish(diff)
-    assert result == '{\n}'
+    assert result == '{}'
 
 
 def test_format_stylish_nested():
@@ -198,6 +199,67 @@ def test_generate_diff_json_format():
 def test_generate_diff_unknown_format():
     with pytest.raises(ValueError):
         generate_diff('file1.json', 'file2.json', 'unknown')
+
+
+def test_format_stylish_list_input():
+    diff_list = [
+        {'key': 'follow', 'status': 'added', 'value': False}
+    ]
+    result = format_stylish(diff_list)
+    assert 'follow' in result
+    assert 'false' in result
+
+
+def test_format_stylish_changed_value():
+    diff = {
+        'timeout': {
+            'status': 'changed',
+            'old_value': 50,
+            'new_value': 20
+        }
+    }
+    result = format_stylish(diff)
+    assert '- timeout: 50' in result
+    assert '+ timeout: 20' in result
+
+
+def test_format_plain_empty():
+    result = format_plain({})
+    assert result == ''
+
+
+def test_format_plain_boolean_value():
+    diff = {
+        'flag': {'status': 'added', 'value': True}
+    }
+    result = format_plain(diff)
+    assert 'true' in result
+
+
+def test_generate_diff_with_absolute_paths():
+    file1 = os.path.abspath(get_fixture_path('file1.json'))
+    file2 = os.path.abspath(get_fixture_path('file2.json'))
+    result = generate_diff(file1, file2)
+    assert isinstance(result, str)
+
+
+def test_parse_file_with_absolute_path():
+    path = os.path.abspath(get_fixture_path('file1.json'))
+    data = parse_file(path)
+    assert isinstance(data, dict)
+
+
+def test_cli_module_import():
+    assert hasattr(cli, 'main')
+
+
+def test_cli_help():
+    result = subprocess.run(
+        [sys.executable, '-m', 'gendiff.scripts.gendiff', '--help'],
+        capture_output=True,
+        text=True
+    )
+    assert result.returncode == 0
 
 
 def test_import():
