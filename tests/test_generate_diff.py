@@ -80,3 +80,11 @@ def test_generate_diff_mixed_formats():
     
     assert result == expected
 
+# В конце файла code/tests/test_generate_diff.py
+
+
+def test_import():
+    __import__('gendiff')
+    __import__('gendiff.parser')
+    __import__('gendiff.formatters.stylish')
+    assert True
