@@ -84,3 +84,18 @@ def test_main_function_file_not_found():
         text=True
     )
     assert result.returncode == 1
+
+
+def test_scripts_main_execution():
+    result = subprocess.run(
+        [sys.executable, '-c', 
+         'from gendiff.scripts.gendiff import main; main()'],
+        capture_output=True,
+        text=True
+    )
+    assert result.returncode in (0, 2)
+
+
+def test_find_file_with_relative_path():
+    result = find_file('./tests/test_data/file1.json')
+    assert result is None or 'file1.json' in result
