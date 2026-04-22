@@ -23,7 +23,6 @@
 
 # Feel free to take a look at our documentation (https://docs.sonarqube.org/latest/analysis/github-integration/)
 # or reach out to our community forum if you need some help (https://community.sonarsource.com/c/sq/10)
-
 name: SonarCloud
 on:
   push:
@@ -34,7 +33,6 @@ on:
 
 jobs:
   sonarcloud:
-    name: SonarCloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -54,7 +52,12 @@ jobs:
       
       - name: Run tests with coverage
         run: |
-          pytest --cov=gendiff --cov-report=xml:coverage.xml || true
+          cd code
+          pytest --cov=gendiff --cov-report=xml:../coverage.xml --cov-report=term
+          cd ..
+          echo "=== Coverage file ==="
+          ls -la coverage.xml
+          head -20 coverage.xml
       
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
