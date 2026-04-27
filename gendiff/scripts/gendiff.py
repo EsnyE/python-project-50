@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 
-from gendiff.generate_diff import generate_diff
+from gendiff.scripts.generate_diff import generate_diff
 
 
 def find_file(filename):

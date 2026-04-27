@@ -7,7 +7,7 @@ from gendiff.formatters.json import format_json
 import json
 import subprocess
 import sys
-from gendiff.parser import parse_file
+from gendiff.scripts.parser import parse_file
 from gendiff import cli
 
 
