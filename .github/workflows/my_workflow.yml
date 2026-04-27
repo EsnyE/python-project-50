@@ -9,29 +9,45 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install dependencies
         run: |
           pip install uv
           make install
+
       - name: Run linter and pytest
         run: |
           make check
+
       - name: Run test coverage
         run: |
           make test-coverage
+          
+          sed -i 's|/home/runner/work/python-project-50/python-project-50/||g' coverage.xml
+          
+          echo "=== Coverage file ==="
+          ls -la coverage.xml
 
-      - name: SonarQubeScan
-        uses: SonarSource/sonarqube-scan-action@v5
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
             -Dsonar.projectKey=EsnyE_python-project-50
             -Dsonar.organization=esnye
+            -Dsonar.sources=gendiff
+            -Dsonar.tests=tests
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.python.version=3.12
             -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.coverage.exclusions=tests/**
             -Dsonar.exclusions=tests/**
