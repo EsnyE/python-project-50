@@ -1,7 +1,9 @@
 import os
-import sys
 import subprocess
+import sys
+
 import pytest
+
 from gendiff.scripts import gendiff
 from gendiff.scripts.gendiff import find_file
 

@@ -1,7 +1,9 @@
-import pytest
 import subprocess
 import sys
 from unittest.mock import patch
+
+import pytest
+
 from gendiff import cli
 from gendiff.cli import main
 
