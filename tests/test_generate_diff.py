@@ -273,6 +273,6 @@ def test_cli_help():
 
 def test_import():
     __import__('gendiff')
-    __import__('gendiff.parser')
+    __import__('gendiff.scripts.parser')
     __import__('gendiff.formatters.stylish')
     assert True
